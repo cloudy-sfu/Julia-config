@@ -1,0 +1,20 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run Julia",
+            "type": "shell",
+            "command": "activate.bat",
+            "args": [
+                "${workspaceFolder}",
+                "${file}"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "detail": "Julia runs the single file or activate."
+        }
+    ]
+}
