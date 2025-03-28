@@ -19,12 +19,12 @@ To use visual studio code shortcut:
 
 Definitions:
 
-- `%base_dir` is the workspace, or program's root directory. The automatically generated `Manifest.toml` and `Project.toml` are in this directory.
-- `%file_path` is the Julia file to execute (e.g. `hello_world.jl`), also the file corresponding to the active tab in Visual Studio Code.
+- `%base_dir%` is the workspace, or program's root directory. The automatically generated `Manifest.toml` and `Project.toml` are in this directory.
+- `%file_path%` is the Julia file to execute (e.g. `hello_world.jl`), also the file corresponding to the active tab in Visual Studio Code.
 
-In Windows command prompt (CMD), to start Julia dialog in the current folder, run the following command. The current folder is set as a virtual environment. 
+In Windows command prompt (CMD), to start Julia dialog in the current folder, run the following command.
 
-In the dialog, packages are all installed into the relative `local_depot` folder.
+*The current folder is set as a virtual environment. In the dialog, packages are all retrieved from and installed into the relative `local_depot` folder.*
 
 ``` 
 call activate.bat
@@ -44,5 +44,11 @@ call activate.bat %base_dir% %file_path%
 
 In Visual Studio code, to run the active tab, press `Ctrl + Shift + P` and find "Tasks: Run Build Task", then choose this action. The active tab will run in the virtual environment.
 
+To open Pluto notebook on `%base_dir%` (in the Pluto home page, the dropdown of "Open a notebook" list files in `%base_dir%`), run the following command.
 
+*If Pluto is not installed, this script will automatically install it.*
+
+```
+call pluto.bat
+```
 
