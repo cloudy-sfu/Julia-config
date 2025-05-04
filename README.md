@@ -44,11 +44,19 @@ call activate.bat %base_dir% %file_path%
 
 In Visual Studio code, to run the active tab, press `Ctrl + Shift + P` and find "Tasks: Run Build Task", then choose this action. The active tab will run in the virtual environment.
 
+### Pluto
+
 To open Pluto notebook on `%base_dir%` (in the Pluto home page, the dropdown of "Open a notebook" list files in `%base_dir%`), run the following command.
 
 *If Pluto is not installed, this script will automatically install it.*
 
 ```
 call pluto.bat
+```
+
+To clear the "My work" recent list, open the F12 console and run
+
+```javascript
+localStorage.clear()
 ```
 
