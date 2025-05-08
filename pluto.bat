@@ -1,12 +1,15 @@
 @echo off
-REM --------------- USER INPUT BEGIN ---------------
-set "julia_path=C:\Users\%username%\AppData\Local\Programs\Julia-1.11.4\bin\julia.exe"
-REM --------------- USER INPUT END   ---------------
+
+for /f "usebackq delims=" %%J in (
+  `powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0get_julia_latest_version.ps1"`
+) do set "julia_path=%%J"
 
 if not defined julia_path (
-    echo Error: Variable "julia_path" is not defined or is empty.
-    exit /b 1
+    set /p julia_path=Julia installed path ^(path to "...\bin\julia.exe"^):
+) else (
+    echo Found Julia installed at %julia_path%
 )
+
 set "base_dir=%~1"
 if not defined base_dir (
     set "base_dir=%cd%"
