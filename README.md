@@ -1,16 +1,22 @@
-# Julia config
+# Julia venv
+
+Setup Julia language virtual environment
 
 ![](https://shields.io/badge/dependencies-Julia-purple)
 ![](https://shields.io/badge/dependencies-Powershell_7-navy)
 ![](https://shields.io/badge/OS-Windows_10_64--bit-navy)
 
+>   [!note]
+>
+>   The project is theoretically compatible to PowerShell 5.1, but not fully tested.
+
 ## Usage
 
 ### Build & run
 
-To run a Julia script or open Julia interactive dialog, run `build_run.ps1` followed by arguments in Windows PowerShell 5.1.
+To run a Julia script or open Julia interactive dialog, run `build_run.ps1` followed by arguments in Windows PowerShell.
 
-This program uses [Powershell style arguments](https://gist.github.com/cloudy-sfu/dce5106496125096092c7a7cc7846f7b).
+This script uses [PowerShell style arguments](https://gist.github.com/cloudy-sfu/dce5106496125096092c7a7cc7846f7b).
 
 Arguments:
 
@@ -27,8 +33,9 @@ Behaviors:
 1. The files `Manifest.toml` and `Project.toml` will be automatically generated in `base_dir` . 
 2. It will use the provided `-julia_path`, or automatically search Julia instances in `$env:LOCALAPPDATA\Programs` (`$env:` means environment variables). If an instance is not found, the terminal will hint and require the user to manually input the absolute path of Julia.
 3. If multiple Julia are installed in the default folder, the latest version will be used.
+4. If `.env` exists, the Julia script can use environment variables defined in this file. [Format](https://github.com/env-lang/env/blob/main/env.md)
 
-To run the script in active tab in Visual Studio Code, 
+To run the script in active tab in Visual Studio Code:
 
 1. Copy the following files to corresponding address relative to the Julia program's root folder.
     ```

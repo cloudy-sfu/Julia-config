@@ -50,7 +50,20 @@ $base_dir_unix = ($base_dir -replace '\\', '/').TrimEnd('/')
 $env:JULIA_DEPOT_PATH = Join-Path $base_dir "local_depot"
 $env:JULIA_PROJECT    = $base_dir
 
-# 5. Activate and instantiate the project environment using Julia
+# 5. Load environment variables
+$env_path = Join-Path $base_dir ".env"
+Get-Content $env_path | Where-Object { $_ -match '=' -and $_ -notmatch '^\s*#' } | ForEach-Object {
+    # Split only on the first '='
+    $key, $value = $_ -split '=', 2
+    $key = $key.Trim()
+    $value = $value.Trim()
+    switch ($Type) {
+        'Environment' { Set-Content -Path "env:\$key" -Value $value }
+        'Regular'     { Set-Variable -Name $key -Value $value -Scope Script }
+    }
+}
+
+# 6. Activate and instantiate the project environment using Julia
 $activate_script = Join-Path $base_dir "_activate.jl"
 
 # Check for existing activation script to avoid overwriting
@@ -69,7 +82,7 @@ Pkg.instantiate()
 
 Remove-Item -Force $activate_script
 
-# 6. Add Pluto if not exists
+# 7. Add Pluto if not exists
 if (-not (Test-Path "$env:JULIA_DEPOT_PATH\packages\Pluto")) {
     $pluto_script = Join-Path $base_dir "_pluto.jl"
 
