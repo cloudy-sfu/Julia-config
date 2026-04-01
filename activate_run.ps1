@@ -58,14 +58,13 @@ $env:JULIA_PROJECT    = $base_dir
 
 # 5. Load environment variables
 $env_path = Join-Path $base_dir ".env"
-Get-Content $env_path | Where-Object { $_ -match '=' -and $_ -notmatch '^\s*#' } | ForEach-Object {
-    # Split only on the first '='
-    $key, $value = $_ -split '=', 2
-    $key = $key.Trim()
-    $value = $value.Trim()
-    switch ($Type) {
-        'Environment' { Set-Content -Path "env:\$key" -Value $value }
-        'Regular'     { Set-Variable -Name $key -Value $value -Scope Script }
+if (Test-Path $env_path) {
+    Get-Content $env_path | Where-Object { $_ -match '=' -and $_ -notmatch '^\s*#' } | ForEach-Object {
+        # Split only on the first '='
+        $key, $value = $_ -split '=', 2
+        $key = $key.Trim()
+        $value = $value.Trim()
+        [Environment]::SetEnvironmentVariable($key, $value, "Process")
     }
 }
 

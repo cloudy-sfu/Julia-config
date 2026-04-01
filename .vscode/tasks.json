@@ -9,7 +9,28 @@
                 "-ExecutionPolicy",
                 "Bypass",
                 "-File",
-                "${workspaceFolder}/build_run.ps1",
+                "${workspaceFolder}/activate_run.ps1",
+                "-script",
+                "${file}",
+                "-base_dir",
+                "${workspaceFolder}"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "detail": "Julia runs the single file or activate."
+        },
+        {
+            "label": "Debug Julia",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}/debug.ps1",
                 "-script",
                 "${file}",
                 "-base_dir",

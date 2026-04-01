@@ -1,21 +1,27 @@
 ﻿<#
 .SYNOPSIS
-Start the Julia project in Pluto.
+Build & run a Julia project.
+
 .DESCRIPTION
-To open a Pluto notebook in the Julia project, run pluto.ps1 followed by arguments.
+To run a Julia script or open a Julia interactive dialog, run build_run.ps1 followed by arguments.
 Behaviors:
 1. The files Manifest.toml and Project.toml will be automatically generated in base_dir.
-2. It will use the provided julia_path, or automatically search Julia instances in $env:LOCALAPPDATA\Programs. If not found, it will abort with an error.
-3. If multiple Julia instances are installed in the default folder, the latest version will be used.
-4. If Pluto is not installed in the local depot, this script will automatically install it.
+2. It will use the provided julia_path, or search Julia instances in $env:LOCALAPPDATA\Programs. If not found, it asks the user to manually input the absolute path.
+3. If multiple Julia are installed in the default folder, the latest version will be used.
+
+.PARAMETER script
+The relative path of any Julia script in the Julia project. Default: enter interactive Julia REPL.
+
 .PARAMETER base_dir
 The root folder of Julia project. Default: the current folder.
+
 .PARAMETER julia_path
 The absolute path to julia.exe executable. Default: auto-detects in LOCALAPPDATA.
 #>
 
 [CmdletBinding()]
 param(
+    [Parameter(Mandatory=$false, HelpMessage="The relative path of any Julia script in the Julia project.")] [string]$script,
     [Parameter(Mandatory=$false, HelpMessage="The root folder of Julia project.")] [string]$base_dir,
     [Parameter(Mandatory=$false, HelpMessage="The absolute path to julia.exe executable.")] [string]$julia_path
 )
@@ -75,30 +81,28 @@ if (Test-Path $activate_script) {
 using Pkg
 Pkg.activate("$base_dir_unix")
 Pkg.instantiate()
+Pkg.add("Infiltrator")
 "@ | Set-Content -Encoding UTF8 $activate_script
 
 & "$julia_path" --project="$base_dir" "$activate_script"
-
 Remove-Item -Force $activate_script
 
-# 7. Add Pluto if not exists
-if (-not (Test-Path "$env:JULIA_DEPOT_PATH\packages\Pluto")) {
-    $pluto_script = Join-Path $base_dir "_pluto.jl"
+# 7. If a Julia script file was provided, run it; otherwise, launch the REPL.
+$script_abs_path = Join-Path $base_dir $script
+$script_path = if (Test-Path $script_abs_path -PathType Leaf) { $script_abs_path } else { $script }
+$script_path_unix = ($script_path -replace '\\', '/').TrimEnd('/')
 
-    # Check for existing activation script to avoid overwriting
-    if (Test-Path $pluto_script) {
-        Write-Error "Temporary Pluto installer already exists at $pluto_script Please remove it before retrying."
-        exit 1
-    }
-
+$debug_script = Join-Path $base_dir "_debug.jl"
 @"
-using Pkg;
-Pkg.add("Pluto");
-"@ | Set-Content -Encoding UTF8 $pluto_script
+using Infiltrator; 
+include("$script_path_unix")
+"@ | Set-Content -Encoding UTF8 $debug_script
 
-    & "$julia_path" --project="$base_dir" "$pluto_script"
-
-    Remove-Item -Force $pluto_script
+if (-not $script -or -not (Test-Path $script_path -PathType Leaf)) {
+    Write-Host "Enter interactive Julia REPL. Press Ctrl+D to quit."
+    & "$julia_path" --project="$base_dir" -i -e "using Infiltrator"
+} else {
+    Write-Host "Debugging $script_path Execution will pause at @infiltrate"
+    & "$julia_path" --project="$base_dir" -i "$debug_script"
+    Remove-Item -Force $debug_script
 }
-
-& "$julia_path" -e "import Pluto; Pluto.run();"
