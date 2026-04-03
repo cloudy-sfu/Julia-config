@@ -44,21 +44,21 @@ To activate Julia virtual environment and enter a Julia interactive dialog, run 
 
 To execute a Julia script, run `.\activate_run.ps1` followed by arguments.
 
-Arguments:
-
-| Name        | Required?                                         | Description                                                 |
-| ----------- | ------------------------------------------------- | ----------------------------------------------------------- |
-| `-script`   | Optional | The relative path of any Julia script in the Julia project. Default: enter interactive Julia REPL. |
-| `-base_dir` | Optional   | The root folder of Julia project. Default: the current folder. |
-| `-julia_path` | Optional | The absolute path to the `julia.exe` executable. Default: auto-detects installation. |
-
 >   [!note]
 >
 >   This script uses [PowerShell style arguments](https://gist.github.com/cloudy-sfu/dce5106496125096092c7a7cc7846f7b).
 
-The files `Manifest.toml` and `Project.toml` will be automatically generated in `base_dir` . 
+Arguments:
 
-It will use the provided `-julia_path`, or automatically search Julia instances in `$env:LOCALAPPDATA\Programs` (`$env:` means environment variables). If an instance is not found, the terminal will hint and require the user to manually input the absolute path of Julia.
+| Name        | Required?                                         | Description                                                 |
+| ----------- | ------------------------------------------------- | ----------------------------------------------------------- |
+| `-Script` | Optional | The relative path of any Julia script in the Julia project. Default: enter interactive Julia REPL. Positional, the first unnamed argument will be considered as `Script`. |
+| `-ProjectDir` | Optional   | The root folder of Julia project. Default: the current folder. |
+| `-JuliaPath` | Optional | The absolute path to the `julia.exe` executable. Default: auto-detects installation. |
+
+The files `Manifest.toml` and `Project.toml` will be automatically generated in `ProjectDir` . 
+
+It will use the provided `-JuliaPath`, or automatically search Julia instances in `$env:LOCALAPPDATA\Programs` (`$env:` means environment variables). If an instance is not found, the terminal will hint and require the user to manually input the absolute path of Julia.
 
 If multiple Julia are installed in the default folder, the latest version will be used.
 
@@ -72,9 +72,9 @@ Arguments:
 
 | Name          | Required? | Description                                                  |
 | ------------- | --------- | ------------------------------------------------------------ |
-| `-script`     | Optional  | The relative path of any Julia script in the Julia project. Default: enter interactive Julia REPL. |
-| `-base_dir`   | Optional  | The root folder of Julia project. Default: the current folder. |
-| `-julia_path` | Optional  | The absolute path to the `julia.exe` executable. Default: auto-detects installation. |
+| `-Script`     | Optional  | The relative path of any Julia script in the Julia project. Default: enter interactive Julia REPL. Positional, the first unnamed argument will be considered as `Script`. |
+| `-ProjectDir` | Optional  | The root folder of Julia project. Default: the current folder. |
+| `-JuliaPath`  | Optional  | The absolute path to the `julia.exe` executable. Default: auto-detects installation. |
 
 Add `@infiltrate` in Julia code to pause the execution there.
 
@@ -92,8 +92,8 @@ Arguments:
 
 | Name        | Required?                               | Description                       |
 | ----------- | --------------------------------------- | --------------------------------- |
-| `-base_dir` | Optional | The root folder of Julia project. Default: the current folder. |
-| `-julia_path` | Optional | The absolute path to the `julia.exe` executable. Default: auto-detects installation. |
+| `-ProjectDir` | Optional | The root folder of Julia project. Default: the current folder. |
+| `-JuliaPath` | Optional | The absolute path to the `julia.exe` executable. Default: auto-detects installation. |
 
 In the Pluto home page, the dropdown of "Open a notebook" list files in `base_dir`.
 

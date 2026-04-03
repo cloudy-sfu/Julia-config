@@ -16,42 +16,42 @@ The absolute path to julia.exe executable. Default: auto-detects in LOCALAPPDATA
 
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory=$false, HelpMessage="The root folder of Julia project.")] [string]$base_dir,
-    [Parameter(Mandatory=$false, HelpMessage="The absolute path to julia.exe executable.")] [string]$julia_path
+    [Parameter(Mandatory=$false, HelpMessage="The root folder of Julia project.")] [string]$ProjectDir,
+    [Parameter(Mandatory=$false, HelpMessage="The absolute path to julia.exe executable.")] [string]$JuliaPath
 )
 
 # 1. Determine base directory: use provided path or default to current directory.
-if (-not $base_dir) {
-    $base_dir = (Get-Location).Path   # default: current working directory
+if (-not $ProjectDir) {
+    $ProjectDir = (Get-Location).Path   # default: current working directory
 } else {
     # Expand relative base path to absolute
-    $base_dir = (Resolve-Path -Path $base_dir).Path
+    $ProjectDir = (Resolve-Path -Path $ProjectDir).Path
 }
 
 # 2. Find Julia path
 # If not provided by the argument, search in the default LocalAppData directory
-if (-not $julia_path -or -not (Test-Path $julia_path -PathType Leaf)) {
-    $julia_path = Get-ChildItem -Directory -Path "$env:LOCALAPPDATA\Programs" -Filter "Julia-*" 2>$null |
+if (-not $JuliaPath -or -not (Test-Path $JuliaPath -PathType Leaf)) {
+    $JuliaPath = Get-ChildItem -Directory -Path "$env:LOCALAPPDATA\Programs" -Filter "Julia-*" 2>$null |
         Sort-Object { [version]($_.Name -replace '^Julia-','') } -Descending |
         Select-Object -First 1 |
         ForEach-Object { Join-Path $_.FullName "bin\julia.exe" }
 }
 
 # If Julia is still not found, abort with an error.
-if (-not (Test-Path $julia_path -PathType Leaf)) {
-    Write-Error "Julia parameter not provided, fallback to $julia_path, but still invalid."
+if (-not (Test-Path $JuliaPath -PathType Leaf)) {
+    Write-Error "Julia parameter not provided, fallback to $JuliaPath, but still invalid."
     exit 1
 }
 
 # 3. Convert base directory path to Unix-style for Julia (replace '\' with '/')
-$base_dir_unix = ($base_dir -replace '\\', '/').TrimEnd('/')
+$base_dir_unix = ($ProjectDir -replace '\\', '/').TrimEnd('/')
 
 # 4. Set environment variables for Julia to use this project and local depot
-$env:JULIA_DEPOT_PATH = Join-Path $base_dir "local_depot"
-$env:JULIA_PROJECT    = $base_dir
+$env:JULIA_DEPOT_PATH = Join-Path $ProjectDir "local_depot"
+$env:JULIA_PROJECT    = $ProjectDir
 
 # 5. Load environment variables
-$env_path = Join-Path $base_dir ".env"
+$env_path = Join-Path $ProjectDir ".env"
 if (Test-Path $env_path) {
     Get-Content $env_path | Where-Object { $_ -match '=' -and $_ -notmatch '^\s*#' } | ForEach-Object {
         # Split only on the first '='
@@ -63,7 +63,7 @@ if (Test-Path $env_path) {
 }
 
 # 6. Activate and instantiate the project environment using Julia
-$activate_script = Join-Path $base_dir "_activate.jl"
+$activate_script = Join-Path $ProjectDir "_activate.jl"
 
 # Check for existing activation script to avoid overwriting
 if (Test-Path $activate_script) {
@@ -77,13 +77,13 @@ Pkg.activate("$base_dir_unix")
 Pkg.instantiate()
 "@ | Set-Content -Encoding UTF8 $activate_script
 
-& "$julia_path" --project="$base_dir" "$activate_script"
+& "$JuliaPath" --project="$ProjectDir" "$activate_script"
 
 Remove-Item -Force $activate_script
 
 # 7. Add Pluto if not exists
 if (-not (Test-Path "$env:JULIA_DEPOT_PATH\packages\Pluto")) {
-    $pluto_script = Join-Path $base_dir "_pluto.jl"
+    $pluto_script = Join-Path $ProjectDir "_pluto.jl"
 
     # Check for existing activation script to avoid overwriting
     if (Test-Path $pluto_script) {
@@ -96,9 +96,9 @@ using Pkg;
 Pkg.add("Pluto");
 "@ | Set-Content -Encoding UTF8 $pluto_script
 
-    & "$julia_path" --project="$base_dir" "$pluto_script"
+    & "$JuliaPath" --project="$ProjectDir" "$pluto_script"
 
     Remove-Item -Force $pluto_script
 }
 
-& "$julia_path" -e "import Pluto; Pluto.run();"
+& "$JuliaPath" -e "import Pluto; Pluto.run();"

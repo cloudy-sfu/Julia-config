@@ -10,9 +10,9 @@
                 "Bypass",
                 "-File",
                 "${workspaceFolder}/activate_run.ps1",
-                "-script",
+                "-Script",
                 "${file}",
-                "-base_dir",
+                "-ProjectDir",
                 "${workspaceFolder}"
             ],
             "group": {
@@ -31,9 +31,9 @@
                 "Bypass",
                 "-File",
                 "${workspaceFolder}/debug.ps1",
-                "-script",
+                "-Script",
                 "${file}",
-                "-base_dir",
+                "-ProjectDir",
                 "${workspaceFolder}"
             ],
             "group": {
@@ -52,7 +52,7 @@
                 "Bypass",
                 "-File",
                 "${workspaceFolder}/pluto.ps1",
-                "-base_dir",
+                "-ProjectDir",
                 "${workspaceFolder}"
             ],
             "group": {
