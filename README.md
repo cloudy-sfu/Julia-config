@@ -42,11 +42,7 @@ To activate Julia virtual environment and enter a Julia interactive dialog, run 
 
 ### Run
 
-To execute a Julia script, run `.\activate_run.ps1` followed by arguments.
-
->   [!note]
->
->   This script uses [PowerShell style arguments](https://gist.github.com/cloudy-sfu/dce5106496125096092c7a7cc7846f7b).
+To execute a Julia script, run `.\activate_run.ps1` followed by arguments in PowerShell.
 
 Arguments:
 
