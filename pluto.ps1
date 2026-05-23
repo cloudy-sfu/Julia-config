@@ -43,9 +43,6 @@ if (-not (Test-Path $JuliaPath -PathType Leaf)) {
     exit 1
 }
 
-# 3. Convert base directory path to Unix-style for Julia (replace '\' with '/')
-$base_dir_unix = ($ProjectDir -replace '\\', '/').TrimEnd('/')
-
 # 4. Set environment variables for Julia to use this project and local depot
 $env:JULIA_DEPOT_PATH = Join-Path $ProjectDir "local_depot"
 $env:JULIA_PROJECT    = $ProjectDir
@@ -73,8 +70,8 @@ if (Test-Path $activate_script) {
 
 @"
 using Pkg
-Pkg.activate("$base_dir_unix")
 Pkg.instantiate()
+Pkg.precompile()
 "@ | Set-Content -Encoding UTF8 $activate_script
 
 & "$JuliaPath" --project="$ProjectDir" "$activate_script"
