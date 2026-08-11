@@ -2,21 +2,29 @@
 
 Setup Julia language virtual environment
 
-![](https://shields.io/badge/dependencies-Julia-purple)
+![](https://shields.io/badge/dependencies-Julia-purple) *(any version)*
 ![](https://shields.io/badge/dependencies-Powershell_7-navy)
-![](https://shields.io/badge/OS-Windows_10_64--bit-navy)
+![](https://shields.io/badge/OS-Windows_11-skyblue)
 
->   [!note]
->
->   The project is theoretically compatible to PowerShell 5.1, but not fully tested.
+## Install
 
-## Usage
+Ensure Julia is installed for the current user.
 
-Copy PowerShell scripts into Julia application's root directory. In that directory, open PowerShell.
+-   If not in default location, you need to specify `-JuliaPath` as instructed later.
+-   If multiple versions exist, it'll use the latest version. To use an earlier version, specify `-JuliaPath` as instructed later.
 
-If using Visual Studio code: Press `Ctrl + Shift + P` and find "Tasks: Run Build Task", select this option. The tasks will be then listed there.
+In PowerShell, make the current directory be your instance repository. 
 
-`.gitignore` list relevant to this program:
+Copy the following files into current directory.
+
+```
+.vscode  # optional: if using Visual Studio Code
+*.ps1
+```
+
+If using Visual Studio Code, press `Ctrl + Shift + P` and select "Tasks: Run Build Task" item. The tasks will be then listed there.
+
+If you don't want to introduce virtual environments into instance repositories, which means you use virtual environments for own convenience without adding new things to your users, add the following content into `.gitignore` of instance repositories.
 
 ```
 # Julia virtual environment https://github.com/cloudy-sfu/Julia-venv
@@ -30,7 +38,7 @@ debug.ps1
 pluto.ps1
 ```
 
-
+## Usage
 
 ### Activate
 
@@ -76,13 +84,11 @@ Add `@infiltrate` in Julia code to pause the execution there.
 
 In Julia debugger session, press `Ctrl+D` to quit the debugger.
 
-### Pluto
+### Interact in Pluto
 
 To enter Pluto environment, run `.\pluto.ps1` followed by arguments.
 
->   [!note]
->
->   If Pluto is not installed, this script will automatically install it.
+If Pluto is not installed, this script will automatically install it.
 
 Arguments:
 
